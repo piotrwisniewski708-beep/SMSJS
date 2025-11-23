@@ -101,6 +101,36 @@
         </form>
       </section>
 
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">Krok 3</p>
+            <h2>Ustawienia wysyłki</h2>
+          </div>
+          <span class="chip neutral" id="deliveryMode">Symulacja</span>
+        </div>
+
+        <form id="deliveryForm" class="form">
+          <div class="field">
+            <label for="webhookUrl">Webhook do wysyłki (POST)</label>
+            <input id="webhookUrl" name="webhookUrl" type="url" placeholder="https://twoj-serwer.pl/api/notify" />
+            <p class="hint">Jeśli pole jest puste, wiadomości będą wysyłane w trybie symulacji i oznaczane jako dostarczone lokalnie.</p>
+          </div>
+          <div class="field">
+            <label for="authToken">Nagłówek Authorization (opcjonalnie)</label>
+            <input id="authToken" name="authToken" type="text" placeholder="Bearer xxx" />
+          </div>
+          <div class="field switch-row">
+            <label for="simulate" class="inline">Tryb symulacji</label>
+            <label class="switch">
+              <input type="checkbox" id="simulate" name="simulate" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <button type="submit" class="secondary">Zapisz ustawienia</button>
+        </form>
+      </section>
+
       <section class="card span-2">
         <div class="card-header">
           <div>
@@ -122,18 +152,34 @@
         <div id="reminders" class="reminder-grid"></div>
       </section>
     </main>
+
+    <section class="card span-2 logs">
+      <div class="card-header">
+        <div>
+          <p class="eyebrow">Historia</p>
+          <h2>Log wysyłek</h2>
+        </div>
+      </div>
+      <div id="deliveryLog" class="log"></div>
+    </section>
   </div>
 
   <template id="reminderTemplate">
     <article class="reminder-card">
       <header>
         <div class="person"></div>
-        <span class="channel"></span>
+        <div class="status-group">
+          <span class="channel"></span>
+          <span class="status"></span>
+        </div>
       </header>
       <p class="message"></p>
       <footer>
-        <span class="schedule"></span>
-        <button class="ghost small">Usuń</button>
+        <div class="schedule"></div>
+        <div class="actions">
+          <button class="ghost small send">Wyślij teraz</button>
+          <button class="ghost small delete">Usuń</button>
+        </div>
       </footer>
     </article>
   </template>
