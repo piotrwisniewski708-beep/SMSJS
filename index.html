@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family Reminder Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">Panel administratora</p>
+        <h1>Przypomnienia dla rodziny</h1>
+        <p class="subtitle">Zarządzaj osobami, typami powiadomień oraz harmonogramem wysyłek.</p>
+      </div>
+      <div class="header-badge">
+        <span class="dot"></span>
+        <span>Tryb offline - dane w przeglądarce</span>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">Krok 1</p>
+            <h2>Dodaj osobę</h2>
+          </div>
+          <button id="resetData" class="ghost">Wyczyść dane</button>
+        </div>
+        <form id="personForm" class="form">
+          <div class="field">
+            <label for="name">Imię</label>
+            <input id="name" name="name" type="text" placeholder="np. Jan" required />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="np. jan@wp.pl" required />
+          </div>
+          <div class="field">
+            <label for="phone">Telefon</label>
+            <input id="phone" name="phone" type="tel" placeholder="np. 500 100 200" required />
+          </div>
+          <button type="submit" class="primary">Dodaj osobę</button>
+        </form>
+
+        <div class="pill-list" id="peopleList"></div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">Krok 2</p>
+            <h2>Zaplanowane powiadomienie</h2>
+          </div>
+          <span class="chip" id="plannedCount">0 w kolejce</span>
+        </div>
+        <form id="reminderForm" class="form">
+          <div class="field">
+            <label for="person">Adresat</label>
+            <select id="person" name="person" required>
+              <option value="" disabled selected>Wybierz osobę</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="channel">Rodzaj powiadomienia</label>
+            <div class="segmented" role="group">
+              <label>
+                <input type="radio" name="channel" value="email" checked />
+                <span>Email</span>
+              </label>
+              <label>
+                <input type="radio" name="channel" value="sms" />
+                <span>SMS</span>
+              </label>
+              <label>
+                <input type="radio" name="channel" value="telefon" />
+                <span>Telefon</span>
+              </label>
+            </div>
+          </div>
+          <div class="field">
+            <label for="message">Treść powiadomienia</label>
+            <textarea id="message" name="message" rows="3" placeholder="Napisz krótką wiadomość..." required></textarea>
+          </div>
+          <div class="field two-col">
+            <div>
+              <label for="date">Data wysłania</label>
+              <input id="date" name="date" type="date" required />
+            </div>
+            <div>
+              <label for="time">Godzina</label>
+              <input id="time" name="time" type="time" required />
+            </div>
+          </div>
+          <button type="submit" class="primary">Dodaj przypomnienie</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">Krok 3</p>
+            <h2>Ustawienia wysyłki</h2>
+          </div>
+          <span class="chip neutral" id="deliveryMode">Symulacja</span>
+        </div>
+
+        <form id="deliveryForm" class="form">
+          <div class="field">
+            <label for="webhookUrl">Webhook do wysyłki (POST)</label>
+            <input id="webhookUrl" name="webhookUrl" type="url" placeholder="https://twoj-serwer.pl/api/notify" />
+            <p class="hint">Jeśli pole jest puste, wiadomości będą wysyłane w trybie symulacji i oznaczane jako dostarczone lokalnie.</p>
+          </div>
+          <div class="field">
+            <label for="authToken">Nagłówek Authorization (opcjonalnie)</label>
+            <input id="authToken" name="authToken" type="text" placeholder="Bearer xxx" />
+          </div>
+          <div class="field switch-row">
+            <label for="simulate" class="inline">Tryb symulacji</label>
+            <label class="switch">
+              <input type="checkbox" id="simulate" name="simulate" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <button type="submit" class="secondary">Zapisz ustawienia</button>
+        </form>
+      </section>
+
+      <section class="card span-2">
+        <div class="card-header">
+          <div>
+            <p class="eyebrow">Podgląd</p>
+            <h2>Twoje przypomnienia</h2>
+          </div>
+          <div class="filters">
+            <select id="filterPerson">
+              <option value="">Wszyscy odbiorcy</option>
+            </select>
+            <select id="filterChannel">
+              <option value="">Wszystkie kanały</option>
+              <option value="email">Email</option>
+              <option value="sms">SMS</option>
+              <option value="telefon">Telefon</option>
+            </select>
+          </div>
+        </div>
+        <div id="reminders" class="reminder-grid"></div>
+      </section>
+    </main>
+
+    <section class="card span-2 logs">
+      <div class="card-header">
+        <div>
+          <p class="eyebrow">Historia</p>
+          <h2>Log wysyłek</h2>
+        </div>
+      </div>
+      <div id="deliveryLog" class="log"></div>
+    </section>
+  </div>
+
+  <template id="reminderTemplate">
+    <article class="reminder-card">
+      <header>
+        <div class="person"></div>
+        <div class="status-group">
+          <span class="channel"></span>
+          <span class="status"></span>
+        </div>
+      </header>
+      <p class="message"></p>
+      <footer>
+        <div class="schedule"></div>
+        <div class="actions">
+          <button class="ghost small send">Wyślij teraz</button>
+          <button class="ghost small delete">Usuń</button>
+        </div>
+      </footer>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
